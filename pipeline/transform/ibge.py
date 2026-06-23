@@ -7,14 +7,18 @@ def _pad_mun(code) -> str:
 
 def load_populacao(data_dir) -> pd.DataFrame:
     path = data_dir / "municipios-populacao.xls"
-    # Row 0 is the header: DATA, UF, COD. UF, COD. MUNIC, NOME DO MUNICÍPIO, POPULAÇÃO
     df = pd.read_excel(path, engine="xlrd", header=0)
+    df.columns = [str(c).strip() for c in df.columns]
 
-    # Find the municipality code and population columns (encoding may mangle names)
-    code_col = next(c for c in df.columns if "MUNIC" in str(c).upper() and "COD" in str(c).upper() and "UF" not in str(c).upper())
-    pop_col = next(c for c in df.columns if "POPULA" in str(c).upper())
+    # COD. UF (2 digits) + COD. MUNIC (5 digits) -> 7-digit IBGE code
+    uf_col = next(c for c in df.columns if "COD" in c.upper() and "UF" in c.upper())
+    munic_col = next(c for c in df.columns if "COD" in c.upper() and "MUNIC" in c.upper())
+    pop_col = next(c for c in df.columns if "POPULA" in c.upper())
 
-    df["municipio_id"] = df[code_col].apply(_pad_mun)
+    df["municipio_id"] = (
+        df[uf_col].astype(int).astype(str).str.zfill(2)
+        + df[munic_col].astype(int).astype(str).str.zfill(5)
+    )
     df["pop_total"] = pd.to_numeric(df[pop_col], errors="coerce").fillna(0).astype(int)
 
     return df[["municipio_id", "pop_total"]].drop_duplicates("municipio_id")
@@ -30,6 +34,7 @@ def load_pib(data_dir) -> pd.DataFrame:
         if "Produto Interno Bruto" in str(c) and "per capita" not in str(c)
     )
 
+    df = df.dropna(subset=[code_col])
     df["municipio_id"] = df[code_col].apply(_pad_mun)
     df["pib"] = pd.to_numeric(df[pib_col], errors="coerce") * 1000
 
