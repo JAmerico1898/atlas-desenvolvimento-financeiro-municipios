@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Source_Sans_3 } from 'next/font/google'
 import './globals.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
 import Header from '@/components/Header'
 
 const cormorant = Cormorant_Garamond({
