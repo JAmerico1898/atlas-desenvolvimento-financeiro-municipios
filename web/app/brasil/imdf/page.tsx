@@ -1,0 +1,20 @@
+import { getImdf } from '@/lib/queries'
+import ImdfPanel from '@/components/ImdfPanel'
+
+export const revalidate = 3600
+
+export default async function ImdfPage() {
+  const data = await getImdf()
+  return (
+    <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '2rem' }}>
+      <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.5rem', fontWeight: 300, color: 'var(--navy)', marginBottom: '0.5rem' }}>
+        IMDF — Índice Municipal de Desenvolvimento Financeiro
+      </h1>
+      <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', maxWidth: '48rem' }}>
+        Síntese do perfil financeiro municipal construída via Análise de Componentes Principais (PCA)
+        sobre as dimensões de acesso, profundidade e digitalização.
+      </p>
+      <ImdfPanel distribuicao={data.distribuicao} cargas={data.cargas} variancia_exp={data.variancia_exp} />
+    </div>
+  )
+}
