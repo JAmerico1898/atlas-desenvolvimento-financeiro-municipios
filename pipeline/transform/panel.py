@@ -29,14 +29,23 @@ def build_panel(data_dir, db_path, points: dict) -> pd.DataFrame:
     logger.info("Loading IFDM...")
     ifdm = load_ifdm(data_dir)
 
-    # Build anchor: ESTBAN saldos filtered to the 3 time points
     target_months = set(points.values())
-    anchor = saldos[saldos["data_base"].isin(target_months)].copy()
-
-    # Map data_base -> ponto label
     month_to_ponto = {v: k for k, v in points.items()}
-    anchor["ponto"] = anchor["data_base"].map(month_to_ponto)
-    anchor = anchor.rename(columns={"data_base": "data_ref_estban"})
+    ponto_to_month = {k: v for k, v in points.items()}
+
+    # Anchor: ALL municipalities from population file × 3 pontos
+    # Municipalities without ESTBAN are banking deserts (num_agencias=0, saldos=0)
+    all_munis = pop[["municipio_id"]].drop_duplicates()
+    anchor = pd.DataFrame(
+        [(m, p) for m in all_munis["municipio_id"] for p in points.keys()],
+        columns=["municipio_id", "ponto"],
+    )
+    anchor["data_ref_estban"] = anchor["ponto"].map(ponto_to_month)
+
+    # ESTBAN saldos filtered to the 3 time points
+    saldos_filt = saldos[saldos["data_base"].isin(target_months)].copy()
+    saldos_filt["ponto"] = saldos_filt["data_base"].map(month_to_ponto)
+    saldos_filt = saldos_filt.drop(columns=["data_base"])
 
     # Agencias: same month filter
     ag = agencias[agencias["data_base"].isin(target_months)].copy()
@@ -53,19 +62,20 @@ def build_panel(data_dir, db_path, points: dict) -> pd.DataFrame:
     pae["ponto"] = pae["data_base"].map(month_to_ponto)
     pae = pae.drop(columns=["data_base"])
 
-    # PIX already has ponto column; track the resolved month as data_ref_pix
-    pix_ref = pix.copy()
-
-    panel = anchor.merge(ag, on=["municipio_id", "ponto"], how="left")
-    panel = panel.merge(pix_ref, on=["municipio_id", "ponto"], how="left")
+    panel = anchor.merge(saldos_filt, on=["municipio_id", "ponto"], how="left")
+    panel = panel.merge(ag, on=["municipio_id", "ponto"], how="left")
+    panel = panel.merge(pix, on=["municipio_id", "ponto"], how="left")
     panel = panel.merge(pop, on="municipio_id", how="left")
     panel = panel.merge(pib, on="municipio_id", how="left")
     panel = panel.merge(pos, on=["municipio_id", "ponto"], how="left")
     panel = panel.merge(pae, on=["municipio_id", "ponto"], how="left")
     panel = panel.merge(ifdm, on="municipio_id", how="left")
 
-    # Add placeholder data_ref_pix (same as ponto's month since PIX resolved above)
-    ponto_to_month = {k: v for k, v in points.items()}
+    # Banking deserts: fill 0 for ESTBAN monetary/count columns
+    estban_cols = ["saldo_credito", "dep_vista", "dep_poupanca", "dep_prazo", "num_agencias"]
+    panel[estban_cols] = panel[estban_cols].fillna(0)
+    panel[["num_postos", "num_paes"]] = panel[["num_postos", "num_paes"]].fillna(0)
+
     panel["data_ref_pix"] = panel["ponto"].map(ponto_to_month)
 
     col_order = [
