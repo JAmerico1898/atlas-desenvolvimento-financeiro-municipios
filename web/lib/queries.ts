@@ -1,5 +1,14 @@
 import sql from './db'
 
+export const VALID_INDICADORES = new Set([
+  'dens_agencias','dens_pontos','deserto_bancario','hab_por_ponto',
+  'credito_pc','deposito_pc','profundidade_pib','credito_pib','irpb',
+  'rcd','sli_pc','irf',
+  'pix_tx_pc','pix_val_pib',
+  'irc','ird','resid_imb_idhm',
+  'imb','imdf',
+])
+
 export async function searchMunicipios(q: string, uf?: string, limit = 10) {
   const pattern = `%${q}%`
   if (uf) {
@@ -54,6 +63,7 @@ export async function getMunicipio(municipio_id: string) {
 }
 
 export async function getMapaData(indicador: string, ponto = 't0') {
+  if (!VALID_INDICADORES.has(indicador)) throw new Error(`Indicador inválido: ${indicador}`)
   let valores: {municipio_id: string; valor: number | null}[]
 
   if (ponto === 't0') {
@@ -78,29 +88,28 @@ export async function getMapaData(indicador: string, ponto = 't0') {
 export async function getRanking(indicador: string, opts: {
   uf?: string; regiao?: string; ordem?: 'asc'|'desc'; page?: number; pageSize?: number
 } = {}) {
+  if (!VALID_INDICADORES.has(indicador)) throw new Error(`Indicador inválido: ${indicador}`)
   const { uf, regiao, ordem = 'desc', page = 1, pageSize = 50 } = opts
   const offset = (page - 1) * pageSize
-
-  // Build query dynamically
-  const conditions: string[] = []
-  if (uf) conditions.push(`d.uf = '${uf}'`)
-  if (regiao) conditions.push(`d.regiao = '${regiao}'`)
-  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
   const orderDir = ordem === 'asc' ? 'ASC' : 'DESC'
+  const ufParam = uf ?? null
+  const regiaoParam = regiao ?? null
 
   const items = await sql`
     SELECT ROW_NUMBER() OVER (ORDER BY f.${sql(indicador)} ${sql.unsafe(orderDir)} NULLS LAST) as posicao,
            f.municipio_id, d.nome, d.uf, f.${sql(indicador)} as valor
     FROM fato_indicadores_municipio f
     JOIN dim_municipio d ON d.municipio_id = f.municipio_id
-    ${sql.unsafe(where)}
+    WHERE (${ufParam}::text IS NULL OR d.uf = ${ufParam})
+      AND (${regiaoParam}::text IS NULL OR d.regiao = ${regiaoParam})
     ORDER BY f.${sql(indicador)} ${sql.unsafe(orderDir)} NULLS LAST
     LIMIT ${pageSize} OFFSET ${offset}`
 
   const [{ total }] = await sql`
     SELECT COUNT(*) as total FROM fato_indicadores_municipio f
     JOIN dim_municipio d ON d.municipio_id = f.municipio_id
-    ${sql.unsafe(where)}`
+    WHERE (${ufParam}::text IS NULL OR d.uf = ${ufParam})
+      AND (${regiaoParam}::text IS NULL OR d.regiao = ${regiaoParam})`
 
   return { total: Number(total), page, items }
 }

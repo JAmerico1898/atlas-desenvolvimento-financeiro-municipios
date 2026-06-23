@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getMapaData } from '@/lib/queries'
+import { getMapaData, VALID_INDICADORES } from '@/lib/queries'
 
 export const revalidate = 3600
 
@@ -10,6 +10,9 @@ export async function GET(req: NextRequest) {
 
   if (!indicador) {
     return NextResponse.json({ error: { code: 'MISSING_PARAM', message: 'indicador é obrigatório' } }, { status: 400 })
+  }
+  if (!VALID_INDICADORES.has(indicador)) {
+    return NextResponse.json({ error: { code: 'INVALID_PARAM', message: 'indicador inválido' } }, { status: 400 })
   }
 
   const VALID_PONTOS = ['t0', 't_12', 't_24']
