@@ -1,0 +1,13 @@
+pandas
+numpy
+scikit-learn
+scipy
+openpyxl
+xlrd
+psycopg[binary]
+sqlalchemy
+python-dotenv
+topojson
+geopandas
+pyproj
+shapely

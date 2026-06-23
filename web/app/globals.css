@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #faf8f5;
+  --navy: #1a2744;
+  --navy-light: #2a3f6a;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #8a8580;
+  --gold: #b8860b;
+  --gold-light: #d4a843;
+  --warm-gray: #6b6460;
+  --light-border: #e8e4df;
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", sans-serif;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 300;
+  color: var(--navy);
+}
