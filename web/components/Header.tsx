@@ -37,16 +37,26 @@ export default function Header() {
       <Link
         href="/"
         style={{
-          fontFamily: 'var(--font-heading)',
-          color: 'var(--navy)',
-          fontWeight: 300,
-          fontSize: '1.4rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.625rem',
           textDecoration: 'none',
-          letterSpacing: '0.05em',
           flexShrink: 0,
         }}
       >
-        ADFM
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="FinLab" style={{ height: '32px', width: 'auto' }} />
+        <span
+          style={{
+            fontFamily: 'var(--font-heading)',
+            color: 'var(--navy)',
+            fontWeight: 300,
+            fontSize: '1.4rem',
+            letterSpacing: '0.05em',
+          }}
+        >
+          ADFM
+        </span>
       </Link>
 
       {/* Center links */}
@@ -128,16 +138,6 @@ export default function Header() {
 
       {/* Right links */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-        <Link
-          href="/sobre"
-          style={{
-            color: pathname === '/sobre' ? 'var(--navy)' : 'var(--text-secondary)',
-            textDecoration: 'none',
-            fontSize: '0.875rem',
-          }}
-        >
-          Sobre
-        </Link>
         <Link
           href="/metodologia"
           style={{
