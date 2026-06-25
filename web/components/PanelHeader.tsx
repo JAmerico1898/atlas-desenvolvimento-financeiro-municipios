@@ -1,4 +1,5 @@
 import { formatCompact, formatDecimal } from '@/lib/formatters'
+import HelpTooltip from './HelpTooltip'
 
 interface PanelHeaderProps {
   municipio: {
@@ -16,13 +17,15 @@ interface PanelHeaderProps {
     imb: number
     cluster_id: number
   }
-  cluster: { rotulo: string } | null
+  rankImb?: number | null
+  rankPop?: number | null
+  rankPib?: number | null
 }
 
-export default function PanelHeader({ municipio, indicadores, cluster }: PanelHeaderProps) {
+export default function PanelHeader({ municipio, indicadores, rankImb, rankPop, rankPib }: PanelHeaderProps) {
   return (
     <div style={{ borderBottom: '1px solid var(--light-border)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
-      {/* Name + badges */}
+      {/* Name + UF + Região */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', flexWrap: 'wrap' }}>
         <h1
           style={{
@@ -37,7 +40,6 @@ export default function PanelHeader({ municipio, indicadores, cluster }: PanelHe
         </h1>
         <Badge label={municipio.uf} color="var(--navy-light)" />
         <Badge label={municipio.regiao} color="var(--warm-gray)" />
-        {cluster && <Badge label={cluster.rotulo} color="var(--gold)" />}
       </div>
 
       {/* Stats row */}
@@ -45,18 +47,32 @@ export default function PanelHeader({ municipio, indicadores, cluster }: PanelHe
         <StatCard
           label="População"
           value={formatCompact(municipio.pop_total)}
-          sub="hab."
+          sub={
+            <>
+              <span>hab.</span>
+              {rankPop != null && (
+                <><br /><RankBadge rank={rankPop} label="nacional" /></>
+              )}
+            </>
+          }
         />
         <StatCard
-          label={`PIB (${municipio.ano_ref_pib})`}
+          label={municipio.ano_ref_pib ? `PIB (${municipio.ano_ref_pib})` : 'PIB'}
           value={`R$ ${formatCompact(municipio.pib)}`}
-          sub="per capita aprox."
+          sub={
+            <>
+              <span style={{ display: 'block', marginBottom: '0.2rem' }}>total municipal</span>
+              {rankPib != null && <RankBadge rank={rankPib} label="nacional" />}
+            </>
+          }
         />
         <StatCard
           label="IMDF"
+          helpText="Síntese das 5 dimensões via PCA (acesso, profundidade, intermediação, digitalização, desigualdade). Normalizado 0–1: maior = mais desenvolvido."
           value={formatDecimal(indicadores.imdf)}
           sub={
             <>
+              <span style={{ display: 'block', marginBottom: '0.2rem' }}>Índice Municipal de Desenv. Financeiro</span>
               <RankBadge rank={indicadores.rank_imdf_nacional} label="nacional" />
               {' · '}
               <RankBadge rank={indicadores.rank_imdf_uf} label={`em ${municipio.uf}`} />
@@ -66,8 +82,14 @@ export default function PanelHeader({ municipio, indicadores, cluster }: PanelHe
         />
         <StatCard
           label="IMB"
+          helpText="Síntese de acesso físico e profundidade financeira via PCA. Mede a inclusão bancária formal. Normalizado 0–1: maior = mais bancarizado."
           value={formatDecimal(indicadores.imb)}
-          sub="índice de maturidade bancária"
+          sub={
+            <>
+              <span style={{ display: 'block', marginBottom: '0.2rem' }}>Índice Municipal de Bancarização</span>
+              {rankImb != null && <RankBadge rank={rankImb} label="nacional" />}
+            </>
+          }
         />
       </div>
     </div>
@@ -98,11 +120,13 @@ function StatCard({
   value,
   sub,
   highlight = false,
+  helpText,
 }: {
   label: string
   value: string
   sub: React.ReactNode
   highlight?: boolean
+  helpText?: string
 }) {
   return (
     <div
@@ -121,9 +145,13 @@ function StatCard({
           textTransform: 'uppercase',
           letterSpacing: '0.06em',
           marginBottom: '0.2rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.2rem',
         }}
       >
-        {label}
+        <span>{label}</span>
+        {helpText && <HelpTooltip text={helpText} />}
       </div>
       <div
         style={{
@@ -143,7 +171,8 @@ function StatCard({
   )
 }
 
-function RankBadge({ rank, label }: { rank: number; label: string }) {
+function RankBadge({ rank, label }: { rank: number | null; label: string }) {
+  if (rank == null) return null
   return (
     <span style={{ fontWeight: 600, color: 'var(--navy-light)' }}>
       #{rank.toLocaleString('pt-BR')} {label}

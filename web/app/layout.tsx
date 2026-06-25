@@ -1,19 +1,6 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Source_Sans_3 } from 'next/font/google'
 import './globals.css'
-import 'maplibre-gl/dist/maplibre-gl.css'
 import Header from '@/components/Header'
-
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['300', '400', '600'],
-  variable: '--font-heading'
-})
-const sourceSans = Source_Sans_3({
-  subsets: ['latin'],
-  weight: ['300', '400', '600'],
-  variable: '--font-body'
-})
 
 export const metadata: Metadata = {
   title: 'Atlas de Desenvolvimento Financeiro dos Municípios',
@@ -22,7 +9,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${cormorant.variable} ${sourceSans.variable}`}>
+    <html lang="pt-BR">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Source+Sans+3:wght@300;400;600&display=swap" />
+        <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" />
+      </head>
       <body>
         <Header />
         <main>{children}</main>

@@ -10,14 +10,26 @@ interface ClusterViewProps {
 }
 
 const PERFIL_LABEL: Record<string, string> = {
+  dens_agencias: 'Densidade de agências',
   dens_pontos: 'Densidade de pontos',
+  hab_por_ponto: 'Hab. por ponto de acesso',
   credito_pc: 'Crédito per capita',
+  deposito_pc: 'Depósito per capita',
+  profundidade_pib: 'Profundidade financeira/PIB',
+  credito_pib: 'Crédito/PIB',
   rcd: 'Razão crédito/depósito',
+  sli_pc: 'Saldo líq. intermediação per capita',
+  irf: 'Índice de Retenção Financeira',
   pix_tx_pc: 'Pix per capita',
+  valor_pix_pc: 'Valor Pix per capita',
   imdf: 'IMDF',
   imb: 'IMB',
-  deposito_pc: 'Depósito per capita',
 }
+
+// The 7 features used in k-means clustering
+const CLUSTERING_FEATURES = [
+  'dens_pontos', 'credito_pc', 'deposito_pc', 'rcd', 'pix_tx_pc', 'imb', 'imdf',
+]
 
 const CLUSTER_COLORS = [
   '#1a2744',
@@ -30,21 +42,30 @@ const CLUSTER_COLORS = [
 ]
 
 export default function ClusterView({ clusters }: ClusterViewProps) {
-  return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-        gap: '1rem',
-      }}
-    >
-      {clusters.map((cluster, idx) => {
-        const color = CLUSTER_COLORS[idx % CLUSTER_COLORS.length]
-        const topIndicators = Object.entries(cluster.perfil)
-          .sort(([, a], [, b]) => Math.abs(b) - Math.abs(a))
-          .slice(0, 3)
+  const sorted = [...clusters].sort((a, b) => (b.perfil?.imdf ?? -Infinity) - (a.perfil?.imdf ?? -Infinity))
 
-        const maxVal = Math.max(...topIndicators.map(([, v]) => Math.abs(v)), 1)
+  return (
+    <div>
+      <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
+        Agrupamento por k-means (k=5) sobre 7 indicadores financeiros padronizados: densidade de pontos, crédito per capita,
+        depósito per capita, razão crédito/depósito, Pix per capita, IMB e IMDF.
+        As barras mostram o z-score médio de cada grupo nos 7 indicadores de agrupamento em relação à média nacional — valores positivos indicam desempenho acima da média.
+        Grupos ordenados de maior para menor inclusão financeira (IMDF médio decrescente).
+      </p>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gap: '1rem',
+        }}
+      >
+      {sorted.map((cluster, idx) => {
+        const color = CLUSTER_COLORS[idx % CLUSTER_COLORS.length]
+        const clusterIndicators = CLUSTERING_FEATURES
+          .map(key => [key, cluster.perfil[key] ?? 0] as [string, number])
+          .filter(([key]) => key in cluster.perfil)
+
+        const maxVal = Math.max(...clusterIndicators.map(([, v]) => Math.abs(v)), 1)
 
         return (
           <div
@@ -91,7 +112,7 @@ export default function ClusterView({ clusters }: ClusterViewProps) {
 
             {/* Profile bars */}
             <div style={{ padding: '0.75rem 1rem' }}>
-              {topIndicators.map(([key, val]) => {
+              {clusterIndicators.map(([key, val]) => {
                 const barWidth = Math.abs(val) / maxVal
                 const barColor = val >= 0 ? color : 'var(--warm-gray)'
                 return (
@@ -106,8 +127,8 @@ export default function ClusterView({ clusters }: ClusterViewProps) {
                       }}
                     >
                       <span>{PERFIL_LABEL[key] ?? key}</span>
-                      <span style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--navy)' }}>
-                        {val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <span style={{ fontVariantNumeric: 'tabular-nums', color: val >= 0 ? 'var(--navy)' : 'var(--text-muted)' }}>
+                        {val >= 0 ? '+' : ''}{val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
                     <div
@@ -134,6 +155,7 @@ export default function ClusterView({ clusters }: ClusterViewProps) {
           </div>
         )
       })}
+      </div>
     </div>
   )
 }

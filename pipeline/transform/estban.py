@@ -27,7 +27,7 @@ def _to_yyyymm(val) -> str:
 def load_saldos(data_dir) -> pd.DataFrame:
     path = data_dir / "municipios-saldos.csv"
     # File has 2 metadata rows, then column headers on row 3 (skiprows=2)
-    df = pd.read_csv(path, sep=";", skiprows=2, encoding="latin-1", low_memory=False)
+    df = pd.read_csv(path, sep=";", encoding="latin-1", low_memory=False)
 
     cols = {
         "CODMUN_IBGE": "municipio_id",

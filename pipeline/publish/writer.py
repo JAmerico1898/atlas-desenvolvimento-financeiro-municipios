@@ -172,7 +172,6 @@ def publish(
                     _scalar(row.pix_val_pib),
                     _scalar(row.irc),
                     _scalar(row.ird),
-                    _scalar(getattr(row, "resid_imb_idhm", None)),
                     _scalar(row.imb),
                     _scalar(row.imdf),
                     _scalar(row.rank_imdf_nacional),
@@ -186,9 +185,9 @@ def publish(
                     dens_agencias, dens_pontos, deserto_bancario, hab_por_ponto,
                     credito_pc, deposito_pc, profundidade_pib, credito_pib, irpb,
                     rcd, sli_pc, irf, pix_tx_pc, pix_val_pib,
-                    irc, ird, resid_imb_idhm, imb, imdf,
+                    irc, ird, imb, imdf,
                     rank_imdf_nacional, rank_imdf_uf, cluster_id)
-                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                    ON CONFLICT (municipio_id) DO NOTHING""",
                 fato_rows,
             )

@@ -1,6 +1,13 @@
 'use client'
 import Link from 'next/link'
 
+function fmtRankingVal(val: number): string {
+  const n = Number(val)
+  if (!isFinite(n)) return '—'
+  const decimals = Math.abs(n) < 10 ? 3 : 0
+  return n.toLocaleString('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+}
+
 interface RankingItem {
   posicao: number
   municipio_id: string
@@ -108,12 +115,7 @@ export default function RankingTable({
                     fontWeight: 500,
                   }}
                 >
-                  {item.valor != null
-                    ? item.valor.toLocaleString('pt-BR', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })
-                    : '—'}
+                  {item.valor != null ? fmtRankingVal(item.valor) : '—'}
                 </td>
               </tr>
             ))}

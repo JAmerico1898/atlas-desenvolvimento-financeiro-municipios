@@ -16,26 +16,15 @@ except ImportError:
     _HAS_SCIPY = False
 
 
-# Features used for clustering (D1–D4 numeric indicators + imdf)
+# 7 features used for clustering (matches user-facing description)
 _CLUSTER_FEATURES = [
-    # D1
-    "dens_agencias",
-    "dens_pontos",
-    "hab_por_ponto",
-    # D2
-    "credito_pc",
-    "deposito_pc",
-    "profundidade_pib",
-    "credito_pib",
-    # D3
-    "rcd",
-    "sli_pc",
-    "irf",
-    # D4
-    "pix_tx_pc",
-    "valor_pix_pc",
-    # Index
-    "imdf",
+    "dens_pontos",   # D1 access
+    "credito_pc",    # D2 depth
+    "deposito_pc",   # D2 depth
+    "rcd",           # D3 intermediation (filled 0 for banking deserts)
+    "pix_tx_pc",     # D4 digitalization
+    "imb",           # composite bankarization index
+    "imdf",          # composite development index
 ]
 
 _LABELS_BY_RANK = [
@@ -87,7 +76,7 @@ def compute_clusters(
     prior_profiles: list[dict] | None = None,
 ) -> tuple[pd.DataFrame, list[dict]]:
     """
-    Cluster municipalities on t0 data. Propagate cluster_id to t_12/t_24 rows.
+    Cluster municipalities on t0 data.
 
     Args:
         df: Panel DataFrame with D1–D4 indicators and imdf already computed.
@@ -109,6 +98,8 @@ def compute_clusters(
 
     # Rows with complete features for clustering
     feat_df = t0[available_features].copy()
+    # Banking deserts have rcd=NaN (0 credit / 0 deposits); fill with 0 so they can be clustered
+    feat_df["rcd"] = feat_df["rcd"].fillna(0)
     complete_mask = feat_df.notna().all(axis=1)
     t0_complete = t0[complete_mask].copy()
 
@@ -160,7 +151,11 @@ def compute_clusters(
     # Auto-label
     label_map = _auto_label(cluster_imdf, k)
 
-    # Build profiles
+    # National mean and std for z-score computation
+    national_mean = {feat: float(t0_complete[feat].mean()) for feat in available_features if feat in t0_complete.columns}
+    national_std = {feat: float(t0_complete[feat].std()) for feat in available_features if feat in t0_complete.columns}
+
+    # Build profiles (z-scores relative to national distribution)
     profiles = []
     for cid in sorted(label_map.keys()):
         cluster_rows = t0_complete[t0_complete["cluster_id"] == cid]
@@ -168,7 +163,13 @@ def compute_clusters(
         perfil = {}
         for feat in available_features:
             if feat in cluster_rows.columns:
-                perfil[feat] = float(cluster_rows[feat].mean())
+                cluster_mean = float(cluster_rows[feat].mean())
+                nat_mean = national_mean.get(feat, 0.0)
+                nat_std = national_std.get(feat, 1.0)
+                if nat_std > 0:
+                    perfil[feat] = round((cluster_mean - nat_mean) / nat_std, 4)
+                else:
+                    perfil[feat] = 0.0
         profiles.append({
             "cluster_id": int(cid),
             "rotulo": label_map[cid],

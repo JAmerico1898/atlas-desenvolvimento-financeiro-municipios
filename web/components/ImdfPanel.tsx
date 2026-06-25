@@ -37,8 +37,9 @@ export default function ImdfPanel({ distribuicao, cargas, variancia_exp }: ImdfP
     const lo = min + i * step
     const hi = lo + step
     const count = distribuicao.filter(v => (i < bins - 1 ? v >= lo && v < hi : v >= lo && v <= hi)).length
-    const label = lo.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-    return { label, count, lo }
+    const label = lo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    const labelHi = hi.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    return { label, labelHi, count, lo }
   })
 
   // Sort cargas by abs value descending
@@ -66,8 +67,8 @@ export default function ImdfPanel({ distribuicao, cargas, variancia_exp }: ImdfP
           <BarChart data={histData} margin={{ top: 4, right: 8, bottom: 4, left: 8 }} barGap={0}>
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 10, fill: 'var(--text-muted)' }}
-              interval={3}
+              tick={{ fontSize: 9, fill: 'var(--text-muted)' }}
+              interval={4}
               axisLine={false}
               tickLine={false}
             />
@@ -85,7 +86,10 @@ export default function ImdfPanel({ distribuicao, cargas, variancia_exp }: ImdfP
                 fontSize: '0.8rem',
               }}
               formatter={(v: number) => [`${v} municípios`, 'Frequência']}
-              labelFormatter={l => `IMDF ≥ ${l}`}
+              labelFormatter={l => {
+                const bin = histData.find(d => d.label === l)
+                return bin ? `IMDF: ${l} – ${bin.labelHi}` : `IMDF ≥ ${l}`
+              }}
             />
             <Bar dataKey="count" radius={[2, 2, 0, 0]}>
               {histData.map((entry, i) => (

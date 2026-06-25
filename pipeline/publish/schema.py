@@ -8,6 +8,8 @@ import psycopg
 def create_tables(conn: psycopg.Connection) -> None:
     """Create all ADFM tables and indexes if they don't exist."""
     with conn.cursor() as cur:
+        cur.execute("CREATE EXTENSION IF NOT EXISTS unaccent")
+
         cur.execute("""
             CREATE TABLE IF NOT EXISTS dim_municipio (
               municipio_id        TEXT PRIMARY KEY,
@@ -45,7 +47,6 @@ def create_tables(conn: psycopg.Connection) -> None:
               pix_val_pib         NUMERIC,
               irc                 NUMERIC,
               ird                 NUMERIC,
-              resid_imb_idhm      NUMERIC,
               imb                 NUMERIC,
               imdf                NUMERIC,
               rank_imdf_nacional  INTEGER,

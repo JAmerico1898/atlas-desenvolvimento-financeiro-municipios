@@ -15,6 +15,7 @@ export default function MunicipioSearch() {
   const [open, setOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
@@ -24,12 +25,14 @@ export default function MunicipioSearch() {
     if (query.length < 2) {
       setResults([])
       setOpen(false)
+      setError(null)
       return
     }
 
     if (timerRef.current) clearTimeout(timerRef.current)
     timerRef.current = setTimeout(async () => {
       setLoading(true)
+      setError(null)
       try {
         const res = await fetch(`/api/municipios/search?q=${encodeURIComponent(query)}`)
         if (res.ok) {
@@ -37,9 +40,13 @@ export default function MunicipioSearch() {
           setResults(data)
           setOpen(true)
           setActiveIndex(-1)
+        } else {
+          setError('Erro ao buscar municípios')
+          setOpen(false)
         }
       } catch {
-        // ignore
+        setError('Erro de conexão')
+        setOpen(false)
       } finally {
         setLoading(false)
       }
@@ -96,19 +103,25 @@ export default function MunicipioSearch() {
             boxSizing: 'border-box',
           }}
         />
-        <span
+        {/* SVG magnifying glass */}
+        <svg
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
           style={{
             position: 'absolute',
-            left: '0.75rem',
+            left: '0.72rem',
             top: '50%',
             transform: 'translateY(-50%)',
+            width: '16px',
+            height: '16px',
             color: 'var(--text-muted)',
             pointerEvents: 'none',
-            fontSize: '1rem',
           }}
         >
-          🔍
-        </span>
+          <circle cx="8.5" cy="8.5" r="5" stroke="currentColor" strokeWidth="1.6" />
+          <path d="m13 13 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
         {loading && (
           <span
             style={{
@@ -124,6 +137,27 @@ export default function MunicipioSearch() {
           </span>
         )}
       </div>
+
+      {error && query.length >= 2 && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            background: 'white',
+            border: '1px solid var(--light-border)',
+            borderRadius: '6px',
+            padding: '0.6rem 1rem',
+            marginTop: '4px',
+            fontSize: '0.85rem',
+            color: '#c0392b',
+            zIndex: 200,
+          }}
+        >
+          {error}
+        </div>
+      )}
 
       {open && results.length > 0 && (
         <ul
@@ -183,7 +217,7 @@ export default function MunicipioSearch() {
         </ul>
       )}
 
-      {open && results.length === 0 && !loading && query.length >= 2 && (
+      {open && results.length === 0 && !loading && !error && query.length >= 2 && (
         <div
           style={{
             position: 'absolute',

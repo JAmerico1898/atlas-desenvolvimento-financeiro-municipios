@@ -6,7 +6,7 @@ Entry point: compute_all(panel_df) → (df_final, meta_indices, cluster_profiles
 
 import pandas as pd
 
-from .dimensions import compute_dimensions, compute_d5_residuals
+from .dimensions import compute_dimensions
 from .indices import compute_indices
 from .clusters import compute_clusters
 
@@ -20,10 +20,9 @@ def compute_all(
     Full indicator pipeline.
 
     Steps:
-        1. D1–D5 (excluding resid_imb_idhm) via compute_dimensions()
+        1. D1–D5 via compute_dimensions()
         2. IMB + IMDF via compute_indices()
-        3. resid_imb_idhm via compute_d5_residuals() (requires IMB)
-        4. Clusters via compute_clusters()
+        3. Clusters via compute_clusters()
 
     Args:
         panel_df: Base panel from pipeline/transform/panel.py
@@ -35,19 +34,11 @@ def compute_all(
         meta_indices: PCA metadata for meta_imdf table.
         cluster_profiles: List of cluster profile dicts.
     """
-    # Step 1: dimensions D1–D5 (irc, ird but not resid yet)
     df = compute_dimensions(panel_df)
-
-    # Step 2: IMB + IMDF
     df, meta_indices = compute_indices(df)
-
-    # Step 3: D5 residual (needs imb)
-    df = compute_d5_residuals(df)
-
-    # Step 4: Clusters
     df, cluster_profiles = compute_clusters(df, k=k_clusters, prior_profiles=prior_profiles)
 
     return df, meta_indices, cluster_profiles
 
 
-__all__ = ["compute_all", "compute_dimensions", "compute_d5_residuals", "compute_indices", "compute_clusters"]
+__all__ = ["compute_all", "compute_dimensions", "compute_indices", "compute_clusters"]

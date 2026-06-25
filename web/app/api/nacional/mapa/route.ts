@@ -15,9 +15,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: { code: 'INVALID_PARAM', message: 'indicador inválido' } }, { status: 400 })
   }
 
-  const VALID_PONTOS = ['t0', 't_12', 't_24']
-  if (!VALID_PONTOS.includes(ponto)) {
-    return NextResponse.json({ error: { code: 'INVALID_PONTO', message: 'ponto deve ser t0, t_12 ou t_24' } }, { status: 400 })
+  if (ponto !== 't0') {
+    return NextResponse.json({ error: { code: 'INVALID_PONTO', message: 'ponto deve ser t0' } }, { status: 400 })
   }
 
   try {

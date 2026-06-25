@@ -11,8 +11,9 @@ export default async function ImdfPage() {
         IMDF — Índice Municipal de Desenvolvimento Financeiro
       </h1>
       <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', maxWidth: '48rem' }}>
-        Síntese do perfil financeiro municipal construída via Análise de Componentes Principais (PCA)
-        sobre as dimensões de acesso, profundidade e digitalização.
+        Índice sintético construído por PCA em dois estágios sobre cinco dimensões — acesso, profundidade,
+        intermediação financeira, digitalização e desenvolvimento socioeconômico —, normalizado de 0 (menor)
+        a 1 (maior desenvolvimento financeiro).
       </p>
       <ImdfPanel distribuicao={data.distribuicao} cargas={data.cargas} variancia_exp={data.variancia_exp} />
     </div>

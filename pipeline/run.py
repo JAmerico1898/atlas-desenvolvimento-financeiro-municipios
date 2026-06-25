@@ -10,13 +10,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import psycopg
+
+# Allow running as `python pipeline/run.py` from the project root
+_HERE = Path(__file__).parent
+if str(_HERE.parent) not in sys.path:
+    sys.path.insert(0, str(_HERE.parent))
+
 from pipeline.config import DATA_DIR, PIX_DB, POINTS, K_CLUSTERS
 from pipeline.transform.panel import build_panel
 from pipeline.indicators import compute_all
 from pipeline.qa.validate import validate
 from pipeline.publish.schema import create_tables
 from pipeline.publish.writer import publish
-import psycopg
 
 
 def main():
@@ -26,11 +32,11 @@ def main():
         sys.exit("ERROR: NEON_DATABASE_URL not set in environment")
 
     print("=== ADFM Pipeline ===")
-    print(f"t0={POINTS['t0']}, t_12={POINTS['t_12']}, t_24={POINTS['t_24']}")
+    print(f"t0={POINTS['t0']}")
 
     print("\n[1/5] Building base panel...")
     panel = build_panel(DATA_DIR, PIX_DB, POINTS)
-    print(f"  {len(panel)} rows ({panel['municipio_id'].nunique()} municipalities × 3 pontos)")
+    print(f"  {len(panel)} rows ({panel['municipio_id'].nunique()} municipalities)")
 
     print("\n[2/5] Computing indicators...")
     df, meta_indices, cluster_profiles = compute_all(panel, K_CLUSTERS)

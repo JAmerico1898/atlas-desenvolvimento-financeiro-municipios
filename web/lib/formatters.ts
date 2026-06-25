@@ -9,7 +9,7 @@ export function formatNumber(v: number | null | undefined): string {
 }
 
 export function formatDecimal(v: number | null | undefined, decimals = 2): string {
-  if (v == null) return '—'
+  if (v == null || !isFinite(v)) return '—'
   return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(v)
 }
 

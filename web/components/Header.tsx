@@ -1,11 +1,20 @@
-'use client'
+﻿'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 export default function Header() {
   const pathname = usePathname()
   const [brasilOpen, setBrasilOpen] = useState(false)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function openDropdown() {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setBrasilOpen(true)
+  }
+  function closeDropdown() {
+    closeTimer.current = setTimeout(() => setBrasilOpen(false), 150)
+  }
 
   const isMunicipio = pathname?.startsWith('/municipio')
   const isBrasil = pathname?.startsWith('/brasil')
@@ -56,11 +65,11 @@ export default function Header() {
           Município
         </Link>
 
-        {/* Brasil dropdown */}
+        {/* Brasil dropdown — delayed close so cursor can travel from trigger to menu */}
         <div
           style={{ position: 'relative' }}
-          onMouseEnter={() => setBrasilOpen(true)}
-          onMouseLeave={() => setBrasilOpen(false)}
+          onMouseEnter={openDropdown}
+          onMouseLeave={closeDropdown}
         >
           <span
             style={{
@@ -76,6 +85,8 @@ export default function Header() {
           </span>
           {brasilOpen && (
             <div
+              onMouseEnter={openDropdown}
+              onMouseLeave={closeDropdown}
               style={{
                 position: 'absolute',
                 top: '100%',
@@ -86,7 +97,6 @@ export default function Header() {
                 minWidth: '140px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 padding: '0.25rem 0',
-                marginTop: '4px',
               }}
             >
               {[
