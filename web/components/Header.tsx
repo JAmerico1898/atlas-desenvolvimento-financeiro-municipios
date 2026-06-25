@@ -45,7 +45,7 @@ export default function Header() {
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.png" alt="FinLab" style={{ height: '32px', width: 'auto' }} />
+        <img src="/logo/finlab-transparent.png" alt="FinLab" style={{ height: '32px', width: 'auto' }} />
         <span
           style={{
             fontFamily: 'var(--font-heading)',
