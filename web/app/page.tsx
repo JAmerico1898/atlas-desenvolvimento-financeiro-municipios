@@ -8,7 +8,7 @@ export default function Home() {
         Atlas de Desenvolvimento<br/>Financeiro dos Municípios
       </h1>
       <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', marginBottom: '2.5rem', maxWidth: '40rem' }}>
-        Indicadores de acesso, profundidade, intermediação, digitalização e desigualdade financeiras para todos os municípios brasileiros.
+        Indicadores de acesso, profundidade, intermediação, digitalização e desigualdade financeira para todos os municípios brasileiros.
       </p>
       <div style={{ width: '100%', maxWidth: '32rem', marginBottom: '3rem' }}>
         <MunicipioSearch />
