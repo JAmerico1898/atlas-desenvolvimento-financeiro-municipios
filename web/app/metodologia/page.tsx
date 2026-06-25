@@ -1,4 +1,4 @@
-const S = {
+﻿const S = {
   page: { maxWidth: '60rem', margin: '0 auto', padding: '3rem 2rem' },
   h1: { fontFamily: 'var(--font-heading)', fontSize: '3rem', fontWeight: 300, color: 'var(--navy)', marginBottom: '0.5rem' },
   lead: { color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '3rem', maxWidth: '48rem' },
@@ -82,34 +82,8 @@ export default function Metodologia() {
         reconciliadas para esse identificador antes do cálculo dos indicadores.
       </p>
 
-      {/* ── 2. Série temporal ──────────────────────────────── */}
-      <h2 style={S.h2}>2. Série temporal</h2>
-      <p style={S.p}>
-        Cada indicador é calculado para três pontos de referência fixos, permitindo comparação
-        interanual sem recalibrar o modelo:
-      </p>
-      <table style={S.table}>
-        <thead>
-          <tr>
-            <th style={S.th}>Ponto</th>
-            <th style={S.th}>Rótulo</th>
-            <th style={S.th}>Data de referência</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td style={S.td}><Code>t0</Code></td><td style={S.td}>Data‑base</td><td style={S.td}>mar/2026</td></tr>
-          <tr><td style={S.td}><Code>t_12</Code></td><td style={S.td}>12 meses antes</td><td style={S.td}>mar/2025</td></tr>
-          <tr><td style={S.td}><Code>t_24</Code></td><td style={S.td}>24 meses antes</td><td style={S.td}>mar/2024</td></tr>
-        </tbody>
-      </table>
-      <p style={S.p}>
-        Dados de fontes anuais (PIB, IFDM) utilizam a edição vigente na janela mais próxima de
-        cada ponto. Os parâmetros de normalização dos índices-síntese (IMDF, IMB) são ancorados
-        exclusivamente em <Code>t0</Code>, garantindo comparabilidade temporal.
-      </p>
-
-      {/* ── 3. Convenções de cálculo ───────────────────────── */}
-      <h2 style={S.h2}>3. Convenções de cálculo</h2>
+      {/* ── 2. Convenções de cálculo ───────────────────────── */}
+      <h2 style={S.h2}>2. Convenções de cálculo</h2>
       <table style={S.table}>
         <thead>
           <tr>
@@ -145,8 +119,8 @@ export default function Metodologia() {
         </tbody>
       </table>
 
-      {/* ── 4. Dimensão 1 ──────────────────────────────────── */}
-      <h2 style={S.h2}>4. Dimensão 1 — Acesso Físico</h2>
+      {/* ── 2. Dimensão 1 ──────────────────────────────────── */}
+      <h2 style={S.h2}>3. Dimensão 1 — Acesso Físico</h2>
       <p style={S.p}>
         Mede a presença de infraestrutura financeira no território. Engloba agências bancárias
         e demais pontos de atendimento regulados pelo Banco Central.
@@ -193,8 +167,8 @@ export default function Metodologia() {
         </tbody>
       </table>
 
-      {/* ── 5. Dimensão 2 ──────────────────────────────────── */}
-      <h2 style={S.h2}>5. Dimensão 2 — Profundidade e Uso</h2>
+      {/* ── 2. Dimensão 2 ──────────────────────────────────── */}
+      <h2 style={S.h2}>4. Dimensão 2 — Profundidade e Uso</h2>
       <p style={S.p}>
         Mede o volume de crédito e depósitos em relação à economia e população local,
         indicando o quanto o sistema financeiro penetra na atividade econômica do município.
@@ -253,8 +227,8 @@ export default function Metodologia() {
         não reflete necessariamente residência do titular.
       </div>
 
-      {/* ── 6. Dimensão 3 ──────────────────────────────────── */}
-      <h2 style={S.h2}>6. Dimensão 3 — Intermediação e Retenção Financeira</h2>
+      {/* ── 2. Dimensão 3 ──────────────────────────────────── */}
+      <h2 style={S.h2}>5. Dimensão 3 — Intermediação e Retenção Financeira</h2>
       <p style={S.p}>
         Avalia se o sistema financeiro local mobiliza a poupança e a reinveste na forma de crédito,
         e o grau de equilíbrio entre os dois lados do balanço bancário.
@@ -294,8 +268,8 @@ export default function Metodologia() {
         </tbody>
       </table>
 
-      {/* ── 7. Dimensão 4 ──────────────────────────────────── */}
-      <h2 style={S.h2}>7. Dimensão 4 — Digitalização</h2>
+      {/* ── 2. Dimensão 4 ──────────────────────────────────── */}
+      <h2 style={S.h2}>6. Dimensão 4 — Digitalização</h2>
       <p style={S.p}>
         Mede a adoção de pagamentos digitais instantâneos via Pix, capturando a penetração do
         sistema financeiro digital na economia local. Variáveis de fluxo (transações no período).
@@ -328,8 +302,8 @@ export default function Metodologia() {
         </tbody>
       </table>
 
-      {/* ── 8. Dimensão 5 ──────────────────────────────────── */}
-      <h2 style={S.h2}>8. Dimensão 5 — Desigualdade Relativa</h2>
+      {/* ── 2. Dimensão 5 ──────────────────────────────────── */}
+      <h2 style={S.h2}>7. Dimensão 5 — Desigualdade Relativa</h2>
       <p style={S.p}>
         Compara o município com a média nacional, revelando se seu sistema financeiro está
         acima ou abaixo da média do país dado seu nível de desenvolvimento humano.
@@ -369,8 +343,8 @@ export default function Metodologia() {
         </tbody>
       </table>
 
-      {/* ── 9. IMB ─────────────────────────────────────────── */}
-      <h2 style={S.h2}>9. IMB — Índice Municipal de Bancarização</h2>
+      {/* ── 2. IMB ─────────────────────────────────────────── */}
+      <h2 style={S.h2}>8. IMB — Índice Municipal de Bancarização</h2>
       <p style={S.p}>
         O IMB resume em um único score o grau de bancarização do município, combinando infraestrutura
         física e digitalização. É calculado por PCA de fase única sobre cinco variáveis de acesso.
@@ -432,8 +406,8 @@ export default function Metodologia() {
         <Code>meta_imdf</Code> a cada atualização, permitindo auditoria e reprodução dos resultados.
       </div>
 
-      {/* ── 10. IMDF ───────────────────────────────────────── */}
-      <h2 style={S.h2}>10. IMDF — Índice Municipal de Desenvolvimento Financeiro</h2>
+      {/* ── 2. IMDF ───────────────────────────────────────── */}
+      <h2 style={S.h2}>9. IMDF — Índice Municipal de Desenvolvimento Financeiro</h2>
       <p style={S.p}>
         O IMDF é o índice-síntese central do Atlas. Combina as cinco dimensões de análise em um
         único score de desenvolvimento financeiro, usando uma <strong>PCA de duas fases</strong>:
@@ -515,8 +489,8 @@ export default function Metodologia() {
         entre períodos reflitam mudanças reais nos municípios — e não redistribuição estatística da amostra.
       </div>
 
-      {/* ── 11. Rankings ───────────────────────────────────── */}
-      <h2 style={S.h2}>11. Rankings</h2>
+      {/* ── 2. Rankings ───────────────────────────────────── */}
+      <h2 style={S.h2}>10. Rankings</h2>
       <p style={S.p}>
         Os rankings nacional e estadual são calculados com base no <Code>IMDF</Code> de <Code>t0</Code>,
         usando ordenação descendente (posição 1 = maior IMDF). Em caso de empate, aplica-se o método <em>min</em>
@@ -524,8 +498,8 @@ export default function Metodologia() {
         o cálculo do IMDF recebem <Code>NULL</Code> no ranking.
       </p>
 
-      {/* ── 12. Clusters ───────────────────────────────────── */}
-      <h2 style={S.h2}>12. Clusters de Municípios</h2>
+      {/* ── 2. Clusters ───────────────────────────────────── */}
+      <h2 style={S.h2}>11. Clusters de Municípios</h2>
       <p style={S.p}>
         Os municípios são agrupados em <strong>5 perfis</strong> por k‑means aplicado sobre o vetor
         padronizado dos cinco scores dimensionais mais o IMDF:
@@ -561,8 +535,8 @@ export default function Metodologia() {
         </tbody>
       </table>
 
-      {/* ── 13. Geo ────────────────────────────────────────── */}
-      <h2 style={S.h2}>13. Dados Geográficos</h2>
+      {/* ── 2. Geo ────────────────────────────────────────── */}
+      <h2 style={S.h2}>12. Dados Geográficos</h2>
       <p style={S.p}>
         A malha municipal utilizada nos mapas é derivada da malha oficial do IBGE (2025),
         simplificada e convertida para o formato <strong>TopoJSON</strong> em dois níveis de
