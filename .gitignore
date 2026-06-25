@@ -28,6 +28,10 @@ data/raw/
 *.jpg
 *.jpeg
 .playwright-mcp/
+# Exception: app logo assets
+!web/public/logo/*.png
+!web/public/logo/*.jpg
+!web/public/logo/*.svg
 
 # Raw data files (Excel/CSV source data)
 *.xlsx
