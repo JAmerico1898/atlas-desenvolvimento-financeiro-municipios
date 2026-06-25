@@ -445,7 +445,7 @@ export default function Metodologia() {
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '0.4rem' }}>
             {vars.map(v => <code key={v} style={{ ...S.code, fontSize: '0.82rem' }}>{v}</code>)}
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', alignSelf: 'center' }}>→ <Code>score_{dim.toLowerCase()}</Code> ∈ [0, 1]</span>
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', alignSelf: 'center' }}>→ <Code>{`score_${dim.toLowerCase()}`}</Code> ∈ [0, 1]</span>
           </div>
         </div>
       ))}
