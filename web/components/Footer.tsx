@@ -29,7 +29,7 @@ export default function Footer() {
           © 2026 Atlas de Desenvolvimento Financeiro dos Municípios. Todos os direitos reservados.
         </span>
         <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)' }}>
-          Prof. José Américo · FGV
+          Prof. José Américo · COPPEAD · FGV · UCAM
         </span>
       </div>
 
