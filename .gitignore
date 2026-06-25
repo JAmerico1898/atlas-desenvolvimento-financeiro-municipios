@@ -22,3 +22,24 @@ out/
 Thumbs.db
 .superpowers/
 data/raw/
+
+# Screenshots and browser testing artifacts
+*.png
+*.jpg
+*.jpeg
+.playwright-mcp/
+
+# Raw data files (Excel/CSV source data)
+*.xlsx
+*.xls
+*.csv
+
+# Geographic mesh source directories
+municipios-malha-territorial/
+uf-malha-territorial/
+
+# SQLite databases
+*.db
+
+# Public data assets (large binary files not tracked in git)
+public/data/
